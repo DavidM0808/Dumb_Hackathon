@@ -62,12 +62,13 @@ Frontend will be available at: http://localhost:5173
 ## Usage
 
 1. Open your browser and navigate to http://localhost:5173
-2. Interact with Labubu using the available controls:
-   - **❤️ Check button**: Add a heart (like)
-   - **❌ Cross button**: Remove a heart (dislike)
-   - **🎧 Earmuffs button**: Toggle audio mute/unmute
-3. Watch the heart counter and audio status update in real-time
-4. When earmuffs are active, the ear buttons are disabled
+2. **Note**: The app starts with earmuffs active by default (muted state)
+3. Interact with Labubu using the available controls:
+   - **🎧 Earmuffs button**: Toggle audio mute/unmute (click to unmute first)
+   - **❤️ Check button**: Add a heart (like) - only works when unmuted
+   - **❌ Cross button**: Remove a heart (dislike) - only works when unmuted
+4. Watch the heart counter and audio status update in real-time
+5. When earmuffs are active, the ear buttons are disabled and Labubu wears golden earmuffs
 
 ## API Endpoints
 
@@ -85,7 +86,7 @@ The backend provides the following REST API endpoints:
 - `GET /api/health` - Check API health status
 
 ## Project Structure
-
+M
 ```
 Dumb_Hackathon/
 ├── api/                    # Backend Express.js application
@@ -133,10 +134,12 @@ Dumb_Hackathon/
 ## Development Notes
 
 - The application uses in-memory storage for game state (resets on server restart)
+- **Default State**: The app starts with earmuffs active (muted) by default for a quieter initial experience
 - CORS is configured to allow requests from the frontend development server
 - The frontend includes loading states and error handling for better UX
 - All interactive elements are disabled during API calls to prevent race conditions
 - The earmuffs feature visually indicates when audio is muted and disables ear-related interactions
+- Users must click the earmuffs button to unmute before they can interact with Labubu's ears
 
 ## Troubleshooting
 

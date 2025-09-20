@@ -6,7 +6,7 @@ const router = express.Router();
 // In a real app, you'd use a database
 let gameState = {
   hearts: 3,
-  isMuted: false,
+  isMuted: true,
   lastUpdated: new Date().toISOString()
 };
 
@@ -114,7 +114,7 @@ router.put('/state', (req: Request, res: Response) => {
 router.post('/reset', (req: Request, res: Response) => {
   gameState = {
     hearts: 3,
-    isMuted: false,
+    isMuted: true,
     lastUpdated: new Date().toISOString()
   };
   
