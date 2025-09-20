@@ -5,7 +5,7 @@ An interactive dating simulation app featuring the adorable Labubu character. Us
 ## Features
 
 - 🎯 Interactive Labubu character with video animations
-- 🎬 Dynamic video switching between default and earmuffs states
+- 🎬 Dynamic video switching based on heart count and mute state
 - ❤️ Heart reaction system (heart/broken heart buttons)
 - 🎧 Audio mute/unmute functionality with video-based earmuffs indicator
 - 📱 Responsive design with modern UI
@@ -69,8 +69,13 @@ Frontend will be available at: http://localhost:5173
    - **❤️ Heart button**: Add a heart (like) - positioned on left ear, only works when unmuted
    - **💔 Broken Heart button**: Remove a heart (dislike) - positioned on right ear, only works when unmuted
 4. Watch the heart counter and audio status update in real-time
-5. When earmuffs are active, the video switches to show Labubu putting on earmuffs, and ear buttons are disabled
-6. When unmuted, the video switches back to the default Labubu animation
+5. **Dynamic Video Behavior**: The background video changes based on your heart count:
+   - **3+ hearts**: Default happy Labubu animation
+   - **2 hearts**: "Ewww disgusting" reaction video
+   - **1 heart**: "Angry shot gun" reaction video  
+   - **0 hearts**: "Crying" emotional video
+6. When earmuffs are active, the video switches to show Labubu putting on earmuffs, and ear buttons are disabled
+7. When unmuted, the video switches back to the heart-count appropriate animation
 
 ## API Endpoints
 
@@ -105,8 +110,11 @@ Dumb_Hackathon/
 │   │   └── labubuApi.ts   # API service layer
 │   └── App.tsx           # Main React app component
 ├── public/               # Static assets
-│   ├── labubu - standing still - default.mov  # Default Labubu video
-│   └── put on earmuff.mov                      # Earmuffs video
+│   ├── labubu - standing still - default.mov  # Default Labubu video (3+ hearts)
+│   ├── put on earmuff.mov                      # Earmuffs video (muted state)
+│   ├── ewww disgusting.mov                     # Disgusted reaction (2 hearts)
+│   ├── angry SHOT GUN.mov                      # Angry reaction (1 heart)
+│   └── crying.mov                              # Crying reaction (0 hearts)
 ├── package.json          # Project dependencies and scripts
 ├── vite.config.ts        # Vite configuration
 ├── tsconfig.json         # TypeScript configuration
@@ -139,7 +147,9 @@ Dumb_Hackathon/
 
 - The application uses in-memory storage for game state (resets on server restart)
 - **Default State**: The app starts with earmuffs active (muted) by default for a quieter initial experience
-- **Video Integration**: The main character uses video files that switch dynamically based on mute state
+- **Dynamic Video System**: The main character uses video files that switch based on:
+  - **Mute state**: Shows earmuffs video when muted
+  - **Heart count**: Different emotional reactions based on remaining hearts (3+: happy, 2: disgusted, 1: angry, 0: crying)
 - CORS is configured to allow requests from the frontend development server
 - The frontend includes loading states and error handling for better UX
 - All interactive elements are disabled during API calls to prevent race conditions

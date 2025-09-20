@@ -64,6 +64,25 @@ export default function LabubuDatingApp() {
     handleApiCall(() => labubuApi.toggleAudio(), 'toggle audio');
   };
 
+  // Function to determine video source based on heart count and mute state
+  const getVideoSource = () => {
+    if (gameState.isMuted) {
+      return "/put on earmuff.mov";
+    }
+    
+    // Dynamic video based on heart count
+    switch (gameState.hearts) {
+      case 0:
+        return "/crying.mov";
+      case 1:
+        return "/angry SHOT GUN.mov";
+      case 2:
+        return "/ewww disgusting.mov";
+      default: // 3 or more hearts
+        return "/labubu - standing still - default.mov";
+    }
+  };
+
   if (initialLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-pink-100 via-purple-50 to-blue-100 flex items-center justify-center">
@@ -137,8 +156,8 @@ export default function LabubuDatingApp() {
               loop
               muted
               playsInline
-              src={gameState.isMuted ? "/put on earmuff.mov" : "/labubu - standing still - default.mov"}
-              key={gameState.isMuted ? "earmuffs" : "default"} // Force re-render when switching
+              src={getVideoSource()}
+              key={`${gameState.isMuted ? 'muted' : 'unmuted'}-${gameState.hearts}`} // Force re-render when switching
             />
 
             {/* Left ear button (heart) - positioned over left ear */}
