@@ -6,7 +6,7 @@ An interactive dating simulation app featuring the adorable Labubu character. Us
 
 - 🎯 Interactive Labubu character with video animations
 - 🎬 Dynamic video switching between default and earmuffs states
-- ❤️ Heart reaction system (like/dislike)
+- ❤️ Heart reaction system (heart/broken heart buttons)
 - 🎧 Audio mute/unmute functionality with video-based earmuffs indicator
 - 📱 Responsive design with modern UI
 - 🔄 Real-time state synchronization between frontend and backend
@@ -66,8 +66,8 @@ Frontend will be available at: http://localhost:5173
 2. **Note**: The app starts with earmuffs active by default (muted state)
 3. Interact with Labubu using the available controls:
    - **🎧 Earmuffs button**: Toggle audio mute/unmute (click to unmute first)
-   - **❤️ Check button**: Add a heart (like) - positioned on left ear, only works when unmuted
-   - **❌ Cross button**: Remove a heart (dislike) - positioned on right ear, only works when unmuted
+   - **❤️ Heart button**: Add a heart (like) - positioned on left ear, only works when unmuted
+   - **💔 Broken Heart button**: Remove a heart (dislike) - positioned on right ear, only works when unmuted
 4. Watch the heart counter and audio status update in real-time
 5. When earmuffs are active, the video switches to show Labubu putting on earmuffs, and ear buttons are disabled
 6. When unmuted, the video switches back to the default Labubu animation

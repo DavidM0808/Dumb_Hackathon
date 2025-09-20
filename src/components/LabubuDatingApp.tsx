@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Heart, Check, X, Volume2, VolumeX, Loader2, AlertCircle } from 'lucide-react';
+import { Heart, HeartCrack, Volume2, VolumeX, Loader2, AlertCircle } from 'lucide-react';
 import { labubuApi, type GameState } from '@/services/labubuApi';
 
 export default function LabubuDatingApp() {
@@ -141,7 +141,7 @@ export default function LabubuDatingApp() {
               key={gameState.isMuted ? "earmuffs" : "default"} // Force re-render when switching
             />
 
-            {/* Left ear button (check) - positioned over left ear */}
+            {/* Left ear button (heart) - positioned over left ear */}
             <button
               onClick={gameState.isMuted || loading ? undefined : addHeart}
               disabled={gameState.isMuted || loading}
@@ -155,11 +155,11 @@ export default function LabubuDatingApp() {
               {loading ? (
                 <Loader2 className="w-4 h-4 animate-spin text-white" />
               ) : (
-                <Check className="w-5 h-5 text-white" />
+                <Heart className="w-5 h-5 text-white" />
               )}
             </button>
 
-            {/* Right ear button (cross) - positioned over right ear */}
+            {/* Right ear button (broken heart) - positioned over right ear */}
             <button
               onClick={gameState.isMuted || loading ? undefined : removeHeart}
               disabled={gameState.isMuted || loading}
@@ -173,7 +173,7 @@ export default function LabubuDatingApp() {
               {loading ? (
                 <Loader2 className="w-4 h-4 animate-spin text-white" />
               ) : (
-                <X className="w-5 h-5 text-white" />
+                <HeartCrack className="w-5 h-5 text-white" />
               )}
             </button>
           </div>
@@ -198,8 +198,8 @@ export default function LabubuDatingApp() {
 
       {/* Instructions */}
       <div className="mt-6 text-center text-sm text-gray-600 max-w-md">
-        <p>Tap the <span className="text-green-600">✓</span> on left ear to add hearts (max 6)</p>
-        <p>Tap the <span className="text-red-600">✗</span> on right ear to remove hearts</p>
+        <p>Tap the <span className="text-green-600">♥</span> on left ear to add hearts (max 6)</p>
+        <p>Tap the <span className="text-red-600">💔</span> on right ear to remove hearts</p>
         <p>Tap the audio button to toggle earmuffs</p>
       </div>
     </div>
