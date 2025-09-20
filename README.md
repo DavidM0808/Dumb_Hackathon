@@ -4,9 +4,10 @@ An interactive dating simulation app featuring the adorable Labubu character. Us
 
 ## Features
 
-- 🎯 Interactive Labubu character with SVG animations
+- 🎯 Interactive Labubu character with video animations
+- 🎬 Dynamic video switching between default and earmuffs states
 - ❤️ Heart reaction system (like/dislike)
-- 🎧 Audio mute/unmute functionality with earmuffs visual indicator
+- 🎧 Audio mute/unmute functionality with video-based earmuffs indicator
 - 📱 Responsive design with modern UI
 - 🔄 Real-time state synchronization between frontend and backend
 - ⚡ Loading states and error handling
@@ -65,10 +66,11 @@ Frontend will be available at: http://localhost:5173
 2. **Note**: The app starts with earmuffs active by default (muted state)
 3. Interact with Labubu using the available controls:
    - **🎧 Earmuffs button**: Toggle audio mute/unmute (click to unmute first)
-   - **❤️ Check button**: Add a heart (like) - only works when unmuted
-   - **❌ Cross button**: Remove a heart (dislike) - only works when unmuted
+   - **❤️ Check button**: Add a heart (like) - positioned on left ear, only works when unmuted
+   - **❌ Cross button**: Remove a heart (dislike) - positioned on right ear, only works when unmuted
 4. Watch the heart counter and audio status update in real-time
-5. When earmuffs are active, the ear buttons are disabled and Labubu wears golden earmuffs
+5. When earmuffs are active, the video switches to show Labubu putting on earmuffs, and ear buttons are disabled
+6. When unmuted, the video switches back to the default Labubu animation
 
 ## API Endpoints
 
@@ -103,6 +105,8 @@ Dumb_Hackathon/
 │   │   └── labubuApi.ts   # API service layer
 │   └── App.tsx           # Main React app component
 ├── public/               # Static assets
+│   ├── labubu - standing still - default.mov  # Default Labubu video
+│   └── put on earmuff.mov                      # Earmuffs video
 ├── package.json          # Project dependencies and scripts
 ├── vite.config.ts        # Vite configuration
 ├── tsconfig.json         # TypeScript configuration
@@ -135,11 +139,13 @@ Dumb_Hackathon/
 
 - The application uses in-memory storage for game state (resets on server restart)
 - **Default State**: The app starts with earmuffs active (muted) by default for a quieter initial experience
+- **Video Integration**: The main character uses video files that switch dynamically based on mute state
 - CORS is configured to allow requests from the frontend development server
 - The frontend includes loading states and error handling for better UX
 - All interactive elements are disabled during API calls to prevent race conditions
-- The earmuffs feature visually indicates when audio is muted and disables ear-related interactions
+- The earmuffs feature switches between two video files and disables ear-related interactions
 - Users must click the earmuffs button to unmute before they can interact with Labubu's ears
+- Video files are served from the public directory and loop continuously
 
 ## Troubleshooting
 
