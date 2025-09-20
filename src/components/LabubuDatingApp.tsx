@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Heart, Check, X, Volume2, VolumeX, Loader2, AlertCircle } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Heart, Check, X, Volume2, VolumeX, Loader2, AlertCircle, Mic, MicOff } from 'lucide-react';
 import { labubuApi, type GameState } from '@/services/labubuApi';
 
 export default function LabubuDatingApp() {
@@ -7,6 +7,104 @@ export default function LabubuDatingApp() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [initialLoading, setInitialLoading] = useState(true);
+  
+  // Audio input state
+  const [audioInputLevel, setAudioInputLevel] = useState(0);
+  const [isListening, setIsListening] = useState(false);
+  const [microphonePermission, setMicrophonePermission] = useState<'granted' | 'denied' | 'prompt'>('prompt');
+  
+  // Audio refs
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const microphoneRef = useRef<MediaStreamAudioSourceNode | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const animationFrameRef = useRef<number | null>(null);
+
+  // Audio input functions
+  const startAudioInput = async () => {
+    try {
+      // Request microphone permission
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      streamRef.current = stream;
+      setMicrophonePermission('granted');
+      
+      // Create audio context
+      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      audioContextRef.current = audioContext;
+      
+      // Create analyser node
+      const analyser = audioContext.createAnalyser();
+      analyser.fftSize = 256;
+      analyserRef.current = analyser;
+      
+      // Connect microphone to analyser
+      const microphone = audioContext.createMediaStreamSource(stream);
+      microphoneRef.current = microphone;
+      microphone.connect(analyser);
+      
+      setIsListening(true);
+      
+      // Start audio level monitoring
+      monitorAudioLevel();
+      
+    } catch (error) {
+      console.error('Error accessing microphone:', error);
+      setMicrophonePermission('denied');
+      setError('Microphone access denied. Please allow microphone access to use audio features.');
+    }
+  };
+  
+  const stopAudioInput = () => {
+    // Stop animation frame
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = null;
+    }
+    
+    // Stop microphone stream
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current = null;
+    }
+    
+    // Disconnect audio nodes
+    if (microphoneRef.current) {
+      microphoneRef.current.disconnect();
+      microphoneRef.current = null;
+    }
+    
+    // Close audio context
+    if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
+      audioContextRef.current.close();
+      audioContextRef.current = null;
+    }
+    
+    analyserRef.current = null;
+    setIsListening(false);
+    setAudioInputLevel(0);
+  };
+  
+  const monitorAudioLevel = () => {
+    if (!analyserRef.current) return;
+    
+    const dataArray = new Uint8Array(analyserRef.current.frequencyBinCount);
+    
+    const updateLevel = () => {
+      if (!analyserRef.current || !isListening) return;
+      
+      analyserRef.current.getByteFrequencyData(dataArray);
+      
+      // Calculate average audio level
+      const average = dataArray.reduce((sum, value) => sum + value, 0) / dataArray.length;
+      const normalizedLevel = average / 255; // Normalize to 0-1
+      
+      setAudioInputLevel(normalizedLevel);
+      
+      animationFrameRef.current = requestAnimationFrame(updateLevel);
+    };
+    
+    updateLevel();
+  };
 
   // Load initial game state
   useEffect(() => {
@@ -27,6 +125,20 @@ export default function LabubuDatingApp() {
 
     loadGameState();
   }, []);
+
+  // Audio input effect - start/stop based on mute state
+  useEffect(() => {
+    if (!gameState.isMuted && microphonePermission === 'granted') {
+      startAudioInput();
+    } else {
+      stopAudioInput();
+    }
+    
+    // Cleanup on unmount
+    return () => {
+      stopAudioInput();
+    };
+  }, [gameState.isMuted, microphonePermission]);
 
   const handleApiCall = async (apiCall: () => Promise<any>, action: string) => {
     if (loading) return;
@@ -57,6 +169,19 @@ export default function LabubuDatingApp() {
   const removeHeart = () => {
     if (gameState.hearts > 0 && !gameState.isMuted) {
       handleApiCall(() => labubuApi.removeHeart(), 'remove heart');
+    }
+  };
+
+  const requestMicrophonePermission = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      stream.getTracks().forEach(track => track.stop()); // Stop the stream immediately
+      setMicrophonePermission('granted');
+      setError(null);
+    } catch (error) {
+      console.error('Error requesting microphone permission:', error);
+      setMicrophonePermission('denied');
+      setError('Microphone access denied. Please allow microphone access to use audio features.');
     }
   };
 
@@ -123,6 +248,52 @@ export default function LabubuDatingApp() {
             />
           ))}
         </div>
+        
+        {/* Audio input indicator */}
+        <div className="flex flex-col items-center gap-2">
+          {!gameState.isMuted && (
+            <>
+              {microphonePermission === 'denied' ? (
+                <button
+                  onClick={requestMicrophonePermission}
+                  className="p-2 rounded-full bg-yellow-500 hover:bg-yellow-600 text-white shadow-lg transition-all duration-200"
+                  title="Grant microphone access for audio features"
+                >
+                  <MicOff className="w-5 h-5" />
+                </button>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={microphonePermission === 'prompt' ? requestMicrophonePermission : undefined}
+                    className="relative"
+                    title={microphonePermission === 'prompt' ? 'Click to enable microphone' : 'Microphone active'}
+                  >
+                    <Mic className={`w-6 h-6 ${isListening ? 'text-green-500' : 'text-gray-400'} ${microphonePermission === 'prompt' ? 'cursor-pointer hover:text-blue-500' : ''}`} />
+                    {isListening && (
+                      <div 
+                        className="absolute -inset-1 rounded-full border-2 border-green-500 animate-ping"
+                        style={{
+                          animationDuration: `${Math.max(0.5, 1 - audioInputLevel)}s`
+                        }}
+                      />
+                    )}
+                  </button>
+                  
+                  {/* Audio level bar */}
+                  <div className="w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-gradient-to-r from-green-400 to-red-500 transition-all duration-100"
+                      style={{ 
+                        width: `${Math.min(100, audioInputLevel * 100)}%`,
+                        opacity: isListening ? 1 : 0.3
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+        </div>
       </div>
 
       {/* Main Labubu character */}
@@ -188,6 +359,17 @@ export default function LabubuDatingApp() {
         <p className={`text-sm font-medium ${gameState.isMuted ? 'text-red-600' : 'text-green-600'}`}>
           Audio: {gameState.isMuted ? 'Muted' : 'Active'}
         </p>
+        {!gameState.isMuted && (
+          <p className="text-xs text-gray-500 mt-1">
+            {isListening ? (
+              <span className="text-green-600">Listening... (Level: {Math.round(audioInputLevel * 100)}%)</span>
+            ) : microphonePermission === 'denied' ? (
+              <span className="text-yellow-600">Microphone access needed</span>
+            ) : (
+              <span>Click microphone icon to enable audio input</span>
+            )}
+          </p>
+        )}
         {loading && (
           <p className="text-xs text-gray-500 mt-1 flex items-center justify-center gap-1">
             <Loader2 className="w-3 h-3 animate-spin" />
@@ -201,6 +383,9 @@ export default function LabubuDatingApp() {
         <p>Tap the <span className="text-green-600">✓</span> on left ear to add hearts (max 6)</p>
         <p>Tap the <span className="text-red-600">✗</span> on right ear to remove hearts</p>
         <p>Tap the audio button to toggle earmuffs</p>
+        {!gameState.isMuted && (
+          <p>Click the <span className="text-blue-600">🎤</span> microphone icon to enable audio input</p>
+        )}
       </div>
     </div>
   );
