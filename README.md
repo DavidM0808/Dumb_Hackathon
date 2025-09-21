@@ -70,13 +70,13 @@ Frontend will be available at: http://localhost:5173
    - **💔 Broken Heart button**: Remove a heart (dislike) - positioned on right ear, only works when unmuted
 4. Watch the heart counter and audio status update in real-time
 5. **Dynamic Video Behavior**: The background video changes based on your heart count:
-   - **6 hearts**: "Ice cream" sweet celebration video
-   - **5 hearts**: "Painting" artistic expression video
-   - **4 hearts**: "Cat" playful interaction video
+   - **6 hearts**: "Ice cream" sweet celebration video (ice cream - 6-1.mov)
+   - **5 hearts**: "Painting" artistic expression video (5 - painting.mov)
+   - **4 hearts**: "Cat" playful interaction video (4 - cat.mov)
    - **3 hearts**: Default happy Labubu animation
-   - **2 hearts**: "Ewww disgusting" reaction video
-   - **1 heart**: "Angry shot gun" intense reaction video
-   - **0 hearts**: "Crying" sad emotional video
+   - **2 hearts**: "Ewww" reaction video (ewww 2.mov)
+   - **1 heart**: "Gun shot" intense reaction video (gun shot - 1.mov)
+   - **0 hearts**: "Crying" sad emotional video (crying - 0.mov)
 6. When earmuffs are active, the video switches to show Labubu putting on earmuffs, and ear buttons are disabled
 7. When unmuted, the video switches back to the heart-count appropriate animation
 
@@ -118,9 +118,9 @@ Dumb_Hackathon/
 │   ├── 4 - cat.mov                             # Cat playful video (4 hearts)
 │   ├── 5 - painting.mov                        # Painting artistic video (5 hearts)
 │   ├── ice cream - 6-1.mov                     # Ice cream celebration video (6 hearts)
-│   ├── ewww disgusting.mov                     # Disgusted reaction (2 hearts)
-│   ├── angry SHOT GUN.mov                      # Angry intense reaction (1 heart)
-│   └── crying.mov                              # Crying sad video (0 hearts)
+│   ├── ewww 2.mov                              # Disgusted reaction (2 hearts)
+│   ├── gun shot - 1.mov                        # Gun shot intense reaction (1 heart)
+│   └── crying - 0.mov                          # Crying sad video (0 hearts)
 ├── package.json          # Project dependencies and scripts
 ├── vite.config.ts        # Vite configuration
 ├── tsconfig.json         # TypeScript configuration
@@ -154,8 +154,9 @@ Dumb_Hackathon/
 - The application uses in-memory storage for game state (resets on server restart)
 - **Default State**: The app starts with earmuffs active (muted) by default for a quieter initial experience
 - **Dynamic Video System**: The main character uses video files that switch based on:
-  - **Mute state**: Shows earmuffs video when muted
-  - **Heart count**: Different emotional reactions based on remaining hearts (6: sweet celebration, 5: artistic expression, 4: playful cat, 3: happy default, 2: disgusted, 1: angry intense, 0: crying sad)
+  - **Mute state**: Shows earmuffs video when muted (audio disabled)
+  - **Heart count**: Different emotional reactions based on remaining hearts (6: sweet celebration, 5: artistic expression, 4: playful cat, 3: happy default, 2: disgusted, 1: gun shot intense, 0: crying sad)
+  - **Audio Playback**: Videos play with audio when unmuted, providing immersive sound effects and reactions
 - CORS is configured to allow requests from the frontend development server
 - The frontend includes loading states and error handling for better UX
 - All interactive elements are disabled during API calls to prevent race conditions
