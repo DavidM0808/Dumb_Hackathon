@@ -78,7 +78,15 @@ export default function LabubuDatingApp() {
         return "/angry SHOT GUN.mov";
       case 2:
         return "/ewww disgusting.mov";
-      default: // 3 or more hearts
+      case 3:
+        return "/labubu - standing still - default.mov";
+      case 4:
+        return "/4 - cat.mov";
+      case 5:
+        return "/5 - painting.mov";
+      case 6:
+        return "/ice cream - 6-1.mov";
+      default: // Fallback for any unexpected values
         return "/labubu - standing still - default.mov";
     }
   };
