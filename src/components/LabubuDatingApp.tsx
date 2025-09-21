@@ -67,27 +67,27 @@ export default function LabubuDatingApp() {
   // Function to determine video source based on heart count and mute state
   const getVideoSource = () => {
     if (gameState.isMuted) {
-      return "/put on earmuff.mov";
+      return encodeURI("/put on earmuff.mov");
     }
     
     // Dynamic video based on heart count
     switch (gameState.hearts) {
       case 0:
-        return "/crying.mov";
+        return encodeURI("/crying - 0.mov");
       case 1:
-        return "/angry SHOT GUN.mov";
+        return encodeURI("/gun shot - 1.mov");
       case 2:
-        return "/ewww disgusting.mov";
+        return encodeURI("/ewww 2.mov");
       case 3:
-        return "/labubu - standing still - default.mov";
+        return encodeURI("/labubu - standing still - default.mov");
       case 4:
-        return "/4 - cat.mov";
+        return encodeURI("/4 - cat.mov");
       case 5:
-        return "/5 - painting.mov";
+        return encodeURI("/5 - painting.mov");
       case 6:
-        return "/ice cream - 6-1.mov";
+        return encodeURI("/ice cream - 6-1.mov");
       default: // Fallback for any unexpected values
-        return "/labubu - standing still - default.mov";
+        return encodeURI("/labubu - standing still - default.mov");
     }
   };
 
@@ -162,7 +162,7 @@ export default function LabubuDatingApp() {
               className="w-full h-full object-cover"
               autoPlay
               loop
-              muted
+              muted={gameState.isMuted}
               playsInline
               src={getVideoSource()}
               key={`${gameState.isMuted ? 'muted' : 'unmuted'}-${gameState.hearts}`} // Force re-render when switching
